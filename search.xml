@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>blktrace usage</title>
+    <url>/2020/12/10/blktrace-usage/</url>
+    <content><![CDATA[<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><ol>
+<li><p>blktrace</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># blktrace -d &#x2F;dev&#x2F;sda -o demo -w 20</span><br><span class="line">&#x3D;&#x3D;&#x3D; sda &#x3D;&#x3D;&#x3D;</span><br><span class="line">  CPU  0:                    0 events,        0 KiB data</span><br><span class="line">  CPU  1:                   44 events,        3 KiB data</span><br><span class="line">  CPU  2:                   49 events,        3 KiB data</span><br><span class="line">  CPU  3:                   42 events,        3 KiB data</span><br><span class="line">  Total:                   135 events (dropped 0),        7 KiB data</span><br><span class="line"></span><br><span class="line"># tree .</span><br><span class="line">.</span><br><span class="line">├── demo.blktrace.0</span><br><span class="line">├── demo.blktrace.1</span><br><span class="line">├── demo.blktrace.2</span><br><span class="line">└── demo.blktrace.3</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+</li>
+<li><p>blkparse</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># mkdir bin</span><br><span class="line"># blkparse -i demo -d bin&#x2F;demo.blktrace.bin</span><br><span class="line">Input file demo.blktrace.1 added                                                                         </span><br><span class="line">Input file demo.blktrace.2 added                                                                         </span><br><span class="line">Input file demo.blktrace.3 added                                                                         </span><br><span class="line">  8,0    2        1     0.000000000 175822  A   W 1052672 + 8 &lt;- (8,5) 0        </span><br><span class="line">  8,0    2        2     0.000001314 175822  Q   W 1052672 + 8 [kworker&#x2F;u8:0] </span><br><span class="line">  8,0    2        3     0.000009535 175822  G   W 1052672 + 8 [kworker&#x2F;u8:0]                             </span><br><span class="line">  8,0    2        4     0.000011136 175822  P   N [kworker&#x2F;u8:0]                </span><br><span class="line">  8,0    2        5     0.000013157 175822  A  WM 1052688 + 8 &lt;- (8,5) 16       </span><br><span class="line">  8,0    2        6     0.000013475 175822  Q  WM 1052688 + 8 [kworker&#x2F;u8:0]   </span><br><span class="line">  8,0    2        7     0.000015063 175822  G  WM 1052688 + 8 [kworker&#x2F;u8:0]    </span><br><span class="line">  8,0    2        8     0.000018433 175822  A  WM 22024352 + 8 &lt;- (8,5) 20971680</span><br><span class="line">  8,0    2        9     0.000018748 175822  Q  WM 22024352 + 8 [kworker&#x2F;u8:0]</span><br><span class="line">  8,0    2       10     0.000019553 175822  G  WM 22024352 + 8 [kworker&#x2F;u8:0]   </span><br><span class="line">  8,0    2       11     0.000021285 175822  A  WM 22041304 + 8 &lt;- (8,5) 20988632</span><br><span class="line"></span><br><span class="line">... ...</span><br><span class="line"></span><br><span class="line">CPU3 (demo):</span><br><span class="line"> Reads Queued:           0,        0KiB  Writes Queued:           8,       32KiB</span><br><span class="line"> Read Dispatches:        2,        0KiB  Write Dispatches:        2,       32KiB</span><br><span class="line"> Reads Requeued:         0               Writes Requeued:         0</span><br><span class="line"> Reads Completed:        2,        0KiB  Writes Completed:        3,       32KiB</span><br><span class="line"> Read Merges:            0,        0KiB  Write Merges:            6,       24KiB</span><br><span class="line"> Read depth:             1               Write depth:             6</span><br><span class="line"> IO unplugs:             1               Timer unplugs:           0</span><br><span class="line"></span><br><span class="line">Total (demo):</span><br><span class="line"> Reads Queued:           0,        0KiB  Writes Queued:          21,       84KiB</span><br><span class="line"> Read Dispatches:        2,        0KiB  Write Dispatches:       15,       84KiB</span><br><span class="line"> Reads Requeued:         0               Writes Requeued:         0</span><br><span class="line"> Reads Completed:        2,        0KiB  Writes Completed:       16,       84KiB</span><br><span class="line"> Read Merges:            0,        0KiB  Write Merges:            6,       24KiB</span><br><span class="line"> IO unplugs:             3               Timer unplugs:           0</span><br><span class="line"></span><br><span class="line">Throughput (R&#x2F;W): 0KiB&#x2F;s &#x2F; 5KiB&#x2F;s</span><br><span class="line">Events (demo): 118 entries</span><br><span class="line">Skips: 0 forward (0 -   0.0%)</span><br><span class="line"></span><br><span class="line"># tree .</span><br><span class="line">.</span><br><span class="line">├── bin</span><br><span class="line">│   └── demo.blktrace.bin</span><br><span class="line">├── demo.blktrace.0</span><br><span class="line">├── demo.blktrace.1</span><br><span class="line">├── demo.blktrace.2</span><br><span class="line">└── demo.blktrace.3</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>btt</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># mkdir out &amp;&amp; cd out</span><br><span class="line"># btt -i ..&#x2F;bin&#x2F;demo.blktrace.bin -o demo.out</span><br><span class="line"># tree .</span><br><span class="line">.</span><br><span class="line">├── 8,0_iops_fp.dat</span><br><span class="line">├── 8,0_mbps_fp.dat</span><br><span class="line">├── demo.out.avg</span><br><span class="line">├── demo.out.dat</span><br><span class="line">├── demo.out_dhist.dat</span><br><span class="line">├── demo.out.msg</span><br><span class="line">├── demo.out_qhist.dat</span><br><span class="line">├── sys_iops_fp.dat</span><br><span class="line">└── sys_mbps_fp.dat</span><br><span class="line"></span><br><span class="line"># head -14 demo.out.avg </span><br><span class="line">&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; All Devices &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line"></span><br><span class="line">            ALL           MIN           AVG           MAX           N</span><br><span class="line">--------------- ------------- ------------- ------------- -----------</span><br><span class="line"></span><br><span class="line">Q2Q               0.000000675   0.806670927  11.010629524          20</span><br><span class="line">Q2G               0.000000316   0.000002936   0.000018018          15</span><br><span class="line">G2I               0.000007751   0.000019599   0.000036723          14</span><br><span class="line">Q2M               0.000000135   0.000000272   0.000000571           6</span><br><span class="line">I2D               0.000003687   0.000073090   0.000304881          14</span><br><span class="line">M2D               0.000005553   0.000017631   0.000029675           6</span><br><span class="line">D2C               0.000133864   0.000237885   0.000280390          21</span><br><span class="line">Q2C               0.000263877   0.000425615   0.002645095          21</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ul>
+<li><a href="https://developer.aliyun.com/article/698568">IO神器blktrace使用介绍</a></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>blktrace</tag>
+        <tag>blkparse</tag>
+        <tag>btt</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>docker 组件</title>
+    <url>/2020/12/08/docker-%E7%BB%84%E4%BB%B6/</url>
+    <content><![CDATA[<ul>
+<li><p>组件关系</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker     ctr</span><br><span class="line">  |         |</span><br><span class="line">  V         V</span><br><span class="line">dockerd -&gt; containerd ---&gt; shim -&gt; runc -&gt; process_a</span><br><span class="line">                     |---&gt; shim -&gt; runc -&gt; process_b</span><br><span class="line">                     +---&gt; shim -&gt; runc -&gt; process_c</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+</li>
+<li><p>组件代码库</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker|dockerd          https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;docker-ce.git</span><br><span class="line">runc                    https:&#x2F;&#x2F;github.com&#x2F;opencontainers&#x2F;runc.git</span><br><span class="line">containerd|shim|ctr     https:&#x2F;&#x2F;github.com&#x2F;containerd&#x2F;containerd.git</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ul>
+<li><a href="http://alexander.holbreich.org/docker-components-explained/">Docker components explained</a></li>
+<li><a href="https://www.jianshu.com/p/1ac4e1fa7c11">Docker 架构演进之路</a></li>
+<li><a href="https://coolshell.cn/?s=DOCKER%E5%9F%BA%E7%A1%80%E6%8A%80%E6%9C%AF">DOCKER基础技术</a></li>
+<li><a href="https://sealyun.com/post/docker-architech/">Docker架构分析</a></li>
+<li><a href="https://sealyun.com/post/runc/">runc 架构破析</a></li>
+<li><a href="https://sealyun.com/post/container-stop-timeout/">容器信号使用</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/linux/l-devmapper/index.html">Linux 内核中的 Device Mapper 机制</a></li>
+<li><a href="https://zhuanlan.51cto.com/art/201905/596796.htm">浅谈Cgroups</a></li>
+<li><a href="https://zhuanlan.51cto.com/art/201907/599391.htm">浅谈Cgroups（二）</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/83609745">kubelet之cri演变史</a></li>
+<li><a href="https://jiajunhuang.com/articles/2018_12_22-docker_components.md.html">Docker组件介绍（一）：runc和containerd</a></li>
+<li><a href="https://jiajunhuang.com/articles/2018_12_24-docker_components_part2.md.html">Docker组件介绍（二）：shim, docker-init和docker-proxy</a></li>
+<li><a href="https://containerd.io/">containerd.io</a></li>
+<li><a href="https://blog.csdn.net/idwtwt/article/details/52972761">dockerd路由和初始化</a></li>
+<li><a href="https://www.cnblogs.com/YaoDD/p/6004556.html">docker containerd shim分析</a></li>
+<li><a href="https://blog.51cto.com/bingdian/2347093?source=dra">centos 7 静态编译docker-ce</a></li>
+<li><a href="https://hustcat.github.io/cgroup-v2-and-writeback-support/">Cgroup V2 and writeback support</a></li>
+<li><a href="https://goldmann.pl/blog/2014/09/11/resource-management-in-docker/">Resource management in Docker</a></li>
+<li><a href="https://kubernetes.io/blog/2016/12/container-runtime-interface-cri-in-kubernetes/">Introducing Container Runtime Interface (CRI) in Kubernetes</a></li>
+<li><a href="https://www.jianshu.com/p/37a8d10265ea">K8s、CRI与container</a></li>
+<li><a href="https://www.alibabacloud.com/blog/cri-and-shimv2-a-new-idea-for-kubernetes-integrating-container-runtime_594783">CRI and ShimV2: A New Idea for Kubernetes Integrating Container Runtime</a></li>
+<li><a href="https://crate.io/a/analyzing-docker-container-performance-native-tools/">Analyzing Docker Container Performance With Native Tools</a></li>
+<li><a href="https://rootlesscontaine.rs/">Rootless Containers</a></li>
+<li><a href="https://weizhang555.github.io/2017/09/containerd-code-analysis/">containerd源码阅读(1)–框架篇</a></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>docker</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ftrace 查看 ext4 写文件路径</title>
+    <url>/2020/12/08/ftrace-%E6%9F%A5%E7%9C%8B-ext4-%E5%86%99%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84/</url>
+    <content><![CDATA[<ol>
+<li><p>获取容器中挂载设备的 major 和 minor number</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># docker exec 2b4c984a19f136 df -h &#x2F;home#</span><br><span class="line">Filesystem                                                              Size  Used Avail Use% Mounted on</span><br><span class="line">&#x2F;dev&#x2F;mapper&#x2F;docker-398ead5b_b695_11ea_991b_1c34da77feb0_externalvolume  118G  9.0G  104G   8% &#x2F;home</span><br><span class="line"></span><br><span class="line"># ls -l &#x2F;dev&#x2F;mapper&#x2F;docker-398ead5b_b695_11ea_991b_1c34da77feb0_externalvolume</span><br><span class="line">lrwxrwxrwx 1 root root 8 Jun 25 11:37 &#x2F;dev&#x2F;mapper&#x2F;docker-398ead5b_b695_11ea_991b_1c34da77feb0_externalvolume -&gt; ..&#x2F;dm-19</span><br><span class="line"></span><br><span class="line"># mount | grep docker-398ead5b_b695_11ea_991b_1c34da77feb0_externalvolume</span><br><span class="line">&#x2F;dev&#x2F;mapper&#x2F;docker-398ead5b_b695_11ea_991b_1c34da77feb0_externalvolume on &#x2F;home&#x2F;data&#x2F;kubelet&#x2F;pods&#x2F;398ead5b-b695-11ea-991b-1c34da77feb0&#x2F;volumes&#x2F;kubernetes.io~lvm&#x2F;externalvolume type ext4 (rw,relatime,data&#x3D;ordered)</span><br><span class="line"></span><br><span class="line"># ls -l &#x2F;dev&#x2F;dm-19</span><br><span class="line">brw-rw---- 1 root disk 253, 19 Jun 25 11:37 &#x2F;dev&#x2F;dm-19</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+</li>
+<li><p>打开 ftrace 对应的 event trace, 并获得 inode</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># echo &quot;(253 * 2^20) + 19&quot; | bc</span><br><span class="line">265289747</span><br><span class="line"></span><br><span class="line"># pwd</span><br><span class="line">&#x2F;sys&#x2F;kernel&#x2F;debug&#x2F;tracing</span><br><span class="line"></span><br><span class="line"># cat set_event</span><br><span class="line">ext4:ext4_mark_inode_dirty</span><br><span class="line"></span><br><span class="line"># echo &quot;dev &#x3D;&#x3D; 265289747&quot; &gt;&gt; events&#x2F;ext4&#x2F;filte</span><br><span class="line"></span><br><span class="line"># cat trace</span><br><span class="line">... 5243281 ...</span><br><span class="line">... 5242894 ...</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>用 debugfs 查看 inode 对应的 path</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># debugfs &#x2F;dev&#x2F;dm-19</span><br><span class="line">debugfs 1.42.9 (28-Dec-2013)</span><br><span class="line">debugfs:  ncheck 5243281</span><br><span class="line">Inode   Pathname</span><br><span class="line">5243281 &#x2F;mysql33066&#x2F;log&#x2F;mysql-bin.000186</span><br><span class="line">debugfs:  ncheck 5242894</span><br><span class="line">Inode   Pathname</span><br><span class="line">5242894 &#x2F;mysql33066&#x2F;data&#x2F;ib_logfile2</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>ftrace</tag>
+        <tag>ext4</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hexo Usage</title>
+    <url>/2020/12/05/hexo/</url>
+    <content><![CDATA[<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><ol>
+<li><p>Install</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Create new post</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+</li>
+<li><p>本地预览</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo generate &amp;&amp; hexo server</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>部署到 github</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">rm -rf .deploy_git/; hexo clean &amp;&amp; hexo generate &amp;&amp; hexo deploy</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ul>
+<li><a href="https://zhuanlan.zhihu.com/p/26625249">GitHub+Hexo 搭建个人网站详细教程</a></li>
+<li><a href="https://linlif.github.io/2017/05/27/Hexo%E4%BD%BF%E7%94%A8%E6%94%BB%E7%95%A5-%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB%E5%8F%8A%E6%A0%87%E7%AD%BE/">Hexo使用攻略-添加分类及标签</a></li>
+<li><a href="https://hacktoday.github.io/2018/12/16/%E7%8E%A9%E8%BD%AChexo%E9%85%8D%E7%BD%AE/">玩转 Hexo 配置</a></li>
+<li><a href="https://www.jianshu.com/p/c9f83d5b893a">Hexo博客添加访问量统计</a></li>
+<li><a href="https://theme-next.iissnan.com/faqs.html">Theme Next 常见问题</a></li>
+<li><a href="https://hexo.io/">Hexo</a></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>systemctl restart 和先 stop 后 start 区别</title>
+    <url>/2020/12/08/systemctl-restart-%E5%92%8C%E5%85%88-stop-%E5%90%8E-start-%E5%8C%BA%E5%88%AB/</url>
+    <content><![CDATA[<h2 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h2><ul>
+<li><p>restart</p>
+<blockquote>
+<p>会把依赖该服务的其它服务重启。</p>
+</blockquote>
+</li>
+<li><p>先 stop 后 start</p>
+<blockquote>
+<p>服务需手动 start 强依赖它的所有服务,<br>因为 stop 服务会导致强依赖的它的服务也停止，</p>
+</blockquote>
+</li>
+<li><p>说明</p>
+<blockquote>
+<p>通过 Wants= 或 WantedBy= 建立的, 是弱依赖<br>通过 Requires= 或 RequiredBy= 建立的，强依赖</p>
+</blockquote>
+<a id="more"></a>
+
+</li>
+</ul>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><ul>
+<li><p>查看依赖 docker 的服务</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># systemctl list-dependencies --before docker.service</span><br><span class="line">docker.service</span><br><span class="line">● ├─kubelet.service</span><br><span class="line">● ├─mon-agent.service</span><br><span class="line">● ├─multi-user.target</span><br><span class="line">● │ ├─systemd-readahead-done.service</span><br><span class="line">● │ ├─systemd-readahead-done.timer</span><br><span class="line">● │ ├─systemd-update-utmp-runlevel.service</span><br><span class="line">● │ └─graphical.target</span><br><span class="line">● │   └─systemd-update-utmp-runlevel.service</span><br><span class="line">● └─shutdown.target</span><br><span class="line">●   ├─systemd-reboot.service</span><br><span class="line">●   └─final.target</span><br><span class="line">●     └─systemd-reboot.service</span><br></pre></td></tr></table></figure></li>
+<li><p>说明</p>
+<blockquote>
+<p>*.target 一般是弱依赖，</p>
+</blockquote>
+</li>
+<li><p>service 配置文件中，Requires 对 start 和 stop 的行为控制</p>
+<blockquote>
+<p>After= 是配置 service 的启动顺序的，只有被依赖项 start 成功后，后面的才会 start<br>service 依赖项只要明确被 stop，它就会 stop， 无论是否配置了 After=</p>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p>Requires=<br>     Similar to Wants=, but declares a stronger dependency. Dependencies of this type may also<br>     be configured by adding a symlink to a .requires/ directory accompanying the unit file.<br>     If this unit gets activated, the units listed will be activated as well. <strong><em>If one of the<br>     other units fails to activate, and an ordering dependency After= on the failing unit is<br>     set, this unit will not be started. Besides, with or without specifying After=, this<br>     unit will be stopped if one of the other units is explicitly stopped</em></strong>.<br>     Often, it is a better choice to use Wants= instead of Requires= in order to achieve a<br>     system that is more robust when dealing with failing services. Note that this dependency<br>     type does not imply that the other unit always has to be in active state when this unit<br>     is running. Specifically: failing condition checks<br>     (such as ConditionPathExists=, ConditionPathIsSymbolicLink=, … — see below) do not cause<br>     the start job of a unit with a Requires= dependency on it to fail. Also, some unit types<br>     may deactivate on their own (for example, a service process may decide to exit cleanly,<br>     or a device may be unplugged by the user), which is not propagated to units having a<br>     Requires= dependency. Use the BindsTo= dependency type together with After= to ensure that<br>     a unit may never be in active state without a specific other unit also in active state (see below).  </p>
+</blockquote>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ul>
+<li><a href="https://wiki.archlinux.org/index.php/Systemd">systemd</a></li>
+<li><a href="https://www.freedesktop.org/software/systemd/man/systemd.unit.html">systemd.unit</a></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>systemctl</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>systemtap 使用</title>
+    <url>/2020/12/08/systemtap-%E4%BD%BF%E7%94%A8/</url>
+    <content><![CDATA[<h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><ol>
+<li><p>查看探测点代码位置</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># stap -l &#39;kernel.function(&quot;vfs_statfs&quot;)&#39;</span><br><span class="line">kernel.function(&quot;vfs_statfs@fs&#x2F;statfs.c:68&quot;)</span><br></pre></td></tr></table></figure></li>
+<li><p>模糊查询探测点</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># stap -l &#39;kernel.function(&quot;vfs_stat*&quot;)&#39;</span><br><span class="line">kernel.function(&quot;vfs_stat@fs&#x2F;stat.c:102&quot;)</span><br><span class="line">kernel.function(&quot;vfs_statfs@fs&#x2F;statfs.c:68&quot;)</span><br></pre></td></tr></table></figure>
+<a id="more"></a></li>
+<li><p>查询探测点可用变量</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># stap -L &#39;kernel.function(&quot;vfs_statfs&quot;)&#39;</span><br><span class="line">kernel.function(&quot;vfs_statfs@fs&#x2F;statfs.c:68&quot;) $path:struct path* $buf:struct kstatfs* $error:int</span><br></pre></td></tr></table></figure></li>
+<li><p>查看文件可用探测点</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># stap -L &#39;kernel.statement(&quot;*@fs&#x2F;statfs.c&quot;)&#39;</span><br><span class="line">kernel.statement(&quot;SYSC_fstatfs64@fs&#x2F;statfs.c:204&quot;) $fd:unsigned int $sz:size_t $buf:struct statfs64* $st:struct kstatfs</span><br><span class="line">kernel.statement(&quot;SYSC_fstatfs@fs&#x2F;statfs.c:195&quot;) $fd:unsigned int $buf:struct statfs* $st:struct kstatfs</span><br><span class="line">kernel.statement(&quot;SYSC_statfs64@fs&#x2F;statfs.c:183&quot;) $pathname:char const* $sz:size_t $buf:struct statfs64* $st:struct kstatfs</span><br><span class="line">kernel.statement(&quot;SYSC_statfs@fs&#x2F;statfs.c:174&quot;) $pathname:char const* $buf:struct statfs* $st:struct kstatfs</span><br><span class="line">kernel.statement(&quot;SYSC_ustat@fs&#x2F;statfs.c:230&quot;) $dev:unsigned int $ubuf:struct ustat* $tmp:struct ustat $sbuf:struct kstatfs</span><br><span class="line">kernel.statement(&quot;SyS_fstatfs64@fs&#x2F;statfs.c:204&quot;) $fd:long int $sz:long int $buf:long int $ret:long int</span><br><span class="line">kernel.statement(&quot;SyS_fstatfs@fs&#x2F;statfs.c:195&quot;) $fd:long int $buf:long int $ret:long int</span><br><span class="line">kernel.statement(&quot;SyS_statfs64@fs&#x2F;statfs.c:183&quot;) $pathname:long int $sz:long int $buf:long int $ret:long int</span><br><span class="line">kernel.statement(&quot;SyS_statfs@fs&#x2F;statfs.c:174&quot;) $pathname:long int $buf:long int $ret:long int</span><br><span class="line">kernel.statement(&quot;SyS_ustat@fs&#x2F;statfs.c:230&quot;) $dev:long int $ubuf:long int $ret:long int</span><br><span class="line">kernel.statement(&quot;calculate_f_flags@fs&#x2F;statfs.c:45&quot;)</span><br><span class="line">kernel.statement(&quot;do_statfs64@fs&#x2F;statfs.c:150&quot;) $st:struct kstatfs* $p:struct statfs64* $buf:struct statfs64</span><br><span class="line">kernel.statement(&quot;do_statfs_native@fs&#x2F;statfs.c:108&quot;) $st:struct kstatfs* $p:struct statfs* $buf:struct statfs</span><br><span class="line">kernel.statement(&quot;fd_statfs@fs&#x2F;statfs.c:97&quot;) $fd:int $st:struct kstatfs*</span><br><span class="line">kernel.statement(&quot;flags_by_mnt@fs&#x2F;statfs.c:12&quot;) $mnt_flags:int</span><br><span class="line">kernel.statement(&quot;flags_by_sb@fs&#x2F;statfs.c:33&quot;)</span><br><span class="line">kernel.statement(&quot;statfs_by_dentry@fs&#x2F;statfs.c:51&quot;) $dentry:struct dentry* $buf:struct kstatfs*</span><br><span class="line">kernel.statement(&quot;user_statfs@fs&#x2F;statfs.c:79&quot;) $pathname:char const* $st:struct kstatfs* $path:struct path</span><br><span class="line">kernel.statement(&quot;vfs_statfs@fs&#x2F;statfs.c:68&quot;) $path:struct path* $buf:struct kstatfs* $error:int</span><br><span class="line">kernel.statement(&quot;vfs_ustat@fs&#x2F;statfs.c:218&quot;) $dev:dev_t $sbuf:struct kstatfs*</span><br></pre></td></tr></table></figure></li>
+<li><p>打印函数参数</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">68 int vfs_statfs(struct path *path, struct kstatfs *buf)</span><br><span class="line">69 &#123;</span><br><span class="line">70     int error;</span><br><span class="line">71 </span><br><span class="line">72     error &#x3D; statfs_by_dentry(path-&gt;dentry, buf);</span><br><span class="line">73     if (!error)</span><br><span class="line">74         buf-&gt;f_flags &#x3D; calculate_f_flags(path-&gt;mnt);</span><br><span class="line">75     return error;</span><br><span class="line">76 &#125;</span><br><span class="line">77 EXPORT_SYMBOL(vfs_statfs);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># cat test_args.stp</span><br><span class="line">#!&#x2F;usr&#x2F;bin&#x2F;stap</span><br><span class="line"></span><br><span class="line">probe begin &#123;</span><br><span class="line">        printf(&quot;begin to probe\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">probe kernel.function(&quot;vfs_statfs&quot;) &#123;</span><br><span class="line">        printf(&quot;%s %d\n&quot;, execname(),pid());</span><br><span class="line">        printf(&quot;path: %s  buf: %s\n&quot;,$path-&gt;mnt-&gt;mnt_root-&gt;d_iname$,$buf$);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">probe end &#123;</span><br><span class="line">        printf(&quot;end of probe\n&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># stap test_args.stp</span><br><span class="line">begin to probe</span><br><span class="line">kubelet 541398</span><br><span class="line">path: &quot;&#x2F;&quot;  buf: &#123;.f_type&#x3D;-114558950424776, .f_bsize&#x3D;-1851488604, .f_blocks&#x3D;2, .f_bfree&#x3D;18446535162213695664, .f_bavail&#x3D;7, .f_files&#x3D;18446629511194360456, .f_ffree&#x3D;1442462320, .f_fsid&#x3D;&#123;...&#125;, .f_namelen&#x3D;-114562515191184, .f_frsize&#x3D;-114562515191808, .f_flags&#x3D;-114562515191184, .f_spare&#x3D;[...]&#125;</span><br><span class="line">end of probe</span><br></pre></td></tr></table></figure></li>
+<li><p>打印函数局部变量</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># cat test_variable.stp</span><br><span class="line">#!&#x2F;usr&#x2F;bin&#x2F;stap</span><br><span class="line"></span><br><span class="line">probe begin &#123;</span><br><span class="line">        printf(&quot;begin to probe\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">probe kernel.statement(&quot;vfs_statfs@fs&#x2F;statfs.c:73&quot;) &#123;</span><br><span class="line">        printf(&quot;%s %d\n&quot;, execname(),pid());</span><br><span class="line">        printf(&quot;error number is %d\n&quot;,$error);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">probe end &#123;</span><br><span class="line">        printf(&quot;end of probe\n&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># stap test_variable.stp</span><br><span class="line">begin to probe</span><br><span class="line">kubelet 541398</span><br><span class="line">error number is 0</span><br><span class="line">end of probe</span><br></pre></td></tr></table></figure></li>
+<li><p>打印函数返回值</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># cat test_return.stp</span><br><span class="line">#!&#x2F;usr&#x2F;bin&#x2F;stap</span><br><span class="line"></span><br><span class="line">probe begin &#123;</span><br><span class="line">        printf(&quot;begin to probe\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">probe kernel.function(&quot;vfs_statfs&quot;).return &#123;</span><br><span class="line">        printf(&quot;%s %d\n&quot;, execname(),pid());</span><br><span class="line">        printf(&quot;error&#39;s return value is %d\n&quot;, @entry($error));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">probe end &#123;</span><br><span class="line">        printf(&quot;end of probe\n&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># stap test_return.stp</span><br><span class="line">begin to probe</span><br><span class="line">kubelet 541398</span><br><span class="line">error&#39;s return value is 0</span><br><span class="line">end of probe</span><br></pre></td></tr></table></figure></li>
+<li><p>打印函数调用栈</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># cat test_stack.stp</span><br><span class="line">#!&#x2F;usr&#x2F;bin&#x2F;stap</span><br><span class="line"></span><br><span class="line">probe begin &#123;</span><br><span class="line">        printf(&quot;begin to probe\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">probe kernel.function(&quot;vfs_statfs&quot;) &#123;</span><br><span class="line">        printf(&quot;%s %d\n&quot;, execname(),pid());</span><br><span class="line">        printf(&quot;----------------------------------\n&quot;);</span><br><span class="line">        print_backtrace();</span><br><span class="line">        printf(&quot;----------------------------------\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">probe end &#123;</span><br><span class="line">        printf(&quot;end of probe\n&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># stap test_stack.stp</span><br><span class="line">begin to probe</span><br><span class="line">flex-node 465242</span><br><span class="line">----------------------------------</span><br><span class="line"> 0xffffffff91a78570 : vfs_statfs+0x0&#x2F;0xc0 [kernel]</span><br><span class="line"> 0xffffffff91a78865 : user_statfs+0x55&#x2F;0xa0 [kernel]</span><br><span class="line"> 0xffffffff91a788d7 : SYSC_statfs+0x27&#x2F;0x60 [kernel]</span><br><span class="line"> 0xffffffff91a78ade : SyS_statfs+0xe&#x2F;0x10 [kernel]</span><br><span class="line"> 0xffffffff91f76ddb : system_call_fastpath+0x22&#x2F;0x27 [kernel]</span><br><span class="line"> 0x7f32088492f7</span><br><span class="line">----------------------------------</span><br><span class="line">end of probe</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看打开的文件</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">stap -ve &#39;probe kernel.function(&quot;do_filp_open&quot;) &#123;if(execname() !&#x3D;&quot;xxx&quot; &amp;&amp; execname()!&#x3D;&quot;yyy&quot;) printf(&quot;%s %d %s\n&quot;,execname(),tid(),kernel_string($pathname-&gt;name))&#125;&#39;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看进程读文件的路径</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">probe kernel.function(&quot;vfs_read&quot;)</span><br><span class="line">&#123;</span><br><span class="line">    if(execname()&#x3D;&#x3D;&quot;xx&quot;)&#123;</span><br><span class="line">          dentry &#x3D; $file-&gt;f_path-&gt;dentry;</span><br><span class="line">          printf(&quot;%s %s %d\n&quot;,ppfunc(),execname(),tid());</span><br><span class="line">          while(kernel_string(@cast(dentry,&quot;struct dentry&quot;)-&gt;d_iname) !&#x3D; &quot;&#x2F;&quot;)&#123;</span><br><span class="line">                 printf(&quot;%s &quot;,kernel_string(@cast(dentry,&quot;struct dentry&quot;)-&gt;d_iname));</span><br><span class="line">                dentry &#x3D; @cast(dentry,&quot;struct dentry&quot;)-&gt;d_parent;</span><br><span class="line">          &#125;</span><br><span class="line">       printf(&quot;\n&quot;);</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看进程写文件的路径</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">probe kernel.function(&quot;vfs_write&quot;)</span><br><span class="line">&#123;</span><br><span class="line">     if(execname()&#x3D;&#x3D;&quot;xx&quot;)&#123;</span><br><span class="line">           dentry &#x3D; $file-&gt;f_path-&gt;dentry;</span><br><span class="line">           printf(&quot;%s %s %d\n&quot;,ppfunc(),execname(),tid());</span><br><span class="line">           while(kernel_string(@cast(dentry,&quot;struct dentry&quot;)-&gt;d_iname) !&#x3D; &quot;&#x2F;&quot;)&#123;</span><br><span class="line">                  printf(&quot;%s &quot;,kernel_string(@cast(dentry,&quot;struct dentry&quot;)-&gt;d_iname));</span><br><span class="line">                  dentry &#x3D; @cast(dentry,&quot;struct dentry&quot;)-&gt;d_parent;</span><br><span class="line">          &#125;</span><br><span class="line">       printf(&quot;\n&quot;); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看内存回收的进程</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">stap -e &#39;probe kernel.function(&quot;shrink_zone&quot;) &#123;printf(&quot;%s, %s, tid&#x3D;%d\n&quot;, ctime(), execname(), tid()) &#125;&#39;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看进入睡眠的进程</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">     process_name &#x3D; kernel_string($prev-&gt;comm);</span><br><span class="line">     if(kernel_string($prev-&gt;parent-&gt;comm) &#x3D;&#x3D; &quot;bash&quot; &amp;&amp; process_name &#x3D;&#x3D; &quot;ls&quot;)&#123;</span><br><span class="line">         printf(&quot;%s %s %d enter sleep, parant:%s %d\n\n&quot;,ctime(),process_name,$prev-&gt;pid,kernel_string($prev-&gt;parent-&gt;comm),$prev-&gt;parent-&gt;pid);</span><br><span class="line">         print_backtrace();</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看唤醒的进程</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">probe kernel.function(&quot;try_to_wake_up&quot;)&#123;</span><br><span class="line">      process_name &#x3D; kernel_string($p-&gt;comm);</span><br><span class="line">      if(kernel_string($p-&gt;parent-&gt;comm) &#x3D;&#x3D; &quot;bash&quot; &amp;&amp; process_name &#x3D;&#x3D; &quot;ls&quot;)&#123;</span><br><span class="line">            printf(&quot;%s %s %d wakeup %s %d, parant:%s %d\n&quot;,ctime(),execname(),tid(),process_name,$p-&gt;pid,kernel_string($p-&gt;parent-&gt;comm),$p-&gt;parent-&gt;pid);</span><br><span class="line">            print_backtrace();</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ul>
+<li><a href="https://blog.csdn.net/Z_Stand/article/details/103152344">s-systemtap工具使用图谱</a></li>
+<li><a href="https://blog.csdn.net/wangzuxi/category_2647873.html">SystemTap使用技巧</a></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>systemtap</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>tcp 状态图</title>
+    <url>/2020/12/15/tcp-%E7%8A%B6%E6%80%81%E5%9B%BE/</url>
+    <content><![CDATA[<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><a id="more"></a>
+
+<div style='display: none'>
+* UML
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@startuml</span><br><span class="line">state CLOSED #yellow</span><br><span class="line">state ESTABLISHED #green</span><br><span class="line"></span><br><span class="line">CLOSED --&gt; LISTEN: Passive open</span><br><span class="line">CLOSED --&gt; SYN_SENT: Active open\nSend SYN</span><br><span class="line"></span><br><span class="line">LISTEN --&gt; CLOSED: Close</span><br><span class="line">LISTEN --&gt; SYN_REVD: Receive SYN\nSend SYN,ACK</span><br><span class="line">LISTEN --&gt; SYN_SENT: Send SYN</span><br><span class="line"></span><br><span class="line">SYN_SENT --&gt; CLOSED: Close</span><br><span class="line">SYN_SENT --&gt; SYN_REVD: Receive SYN\nSend SYN,ACK</span><br><span class="line">SYN_SENT --&gt; ESTABLISHED: Receive SYN,ACK\nSend ACK</span><br><span class="line"></span><br><span class="line">SYN_REVD --&gt; CLOSED: Timeout|RST</span><br><span class="line">SYN_REVD --&gt; ESTABLISHED: Receive ACK</span><br><span class="line">SYN_REVD --&gt; Active.close: Send FIN</span><br><span class="line"></span><br><span class="line">ESTABLISHED --&gt; Active.close: Send FIN</span><br><span class="line">ESTABLISHED --&gt; Passive.close: Receive FIN\nSend ACK</span><br><span class="line"></span><br><span class="line">state Active.close &#123;</span><br><span class="line">	state TIME_WAIT #red</span><br><span class="line">	FIN_WAIT_1 --&gt; FIN_WAIT_2: Receive ACK</span><br><span class="line">	FIN_WAIT_1 --&gt; TIME_WAIT: Receive FIN,ACK\nSend ACK</span><br><span class="line">	FIN_WAIT_1 --&gt; CLOSING: Receive FIN\nSend ACK</span><br><span class="line"></span><br><span class="line">	FIN_WAIT_2 --&gt; TIME_WAIT: Receive FIN\nSend ACK</span><br><span class="line"></span><br><span class="line">	CLOSING --&gt; TIME_WAIT: Receive ACK</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Active.close --&gt; CLOSED: After 2*MSL</span><br><span class="line"></span><br><span class="line">state Passive.close &#123;</span><br><span class="line">	CLOSE_WAIT --&gt; LAST_ACK: Send FIN</span><br><span class="line">&#125;</span><br><span class="line">Passive.close --&gt; CLOSED: Receive ACK</span><br><span class="line"></span><br><span class="line">@enduml</span><br></pre></td></tr></table></figure>
+</div>
+
+<p><img src="https://github.com/richard-tai/image/raw/master/tcp_state.png" alt="tcp state"></p>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ul>
+<li><a href="https://draveness.me/whys-the-design-tcp-time-wait/">为什么 TCP 协议有 TIME_WAIT 状态</a></li>
+<li><a href="https://www.jianshu.com/p/3c7a0771b67e">TCP状态机</a></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>tcp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>vim</title>
+    <url>/2020/12/06/vim/</url>
+    <content><![CDATA[<h2 id="设置"><a href="#设置" class="headerlink" title="设置"></a>设置</h2><ul>
+<li>高亮 c/c++ 函数<br>粘贴在文件末尾 /usr/share/vim/vim81/syntax/c.vim<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&quot;highlight Functions</span><br><span class="line">syn match cFunctions &quot;\&lt;[a-zA-Z_][a-zA-Z_0-9]*\&gt;[^()]*)(&quot;me&#x3D;e-2</span><br><span class="line">syn match cFunctions &quot;\&lt;[a-zA-Z_][a-zA-Z_0-9]*\&gt;\s*(&quot;me&#x3D;e-1</span><br><span class="line">hi cFunctions guifg&#x3D;#7fd02e cterm&#x3D;bold ctermfg&#x3D;yellow</span><br><span class="line">syn match cClass &quot;\&lt;[a-zA-Z_][a-zA-Z_0-9]*\&gt;::&quot;me&#x3D;e-2</span><br><span class="line">hi cClass guifg&#x3D;#7fd02e cterm&#x3D;bold ctermfg&#x3D;yellow</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>vim</tag>
+      </tags>
+  </entry>
+</search>
